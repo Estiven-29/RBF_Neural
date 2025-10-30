@@ -173,8 +173,20 @@ class RBFNeuralNetwork:
         if metricas['Converge']:
             print(f"\n  ¡Éxito! EG ({metricas['EG']:.6f}) ≤ Error Óptimo ({self.error_optimo})")
         else:
-            print(f"\n  Advertencia: EG ({metricas['EG']:.6f}) > Error Óptimo ({self.error_optimo})")
-            print(f"  Sugerencia: Aumentar el número de centros radiales")
+            porcentaje = (metricas['EG'] / self.error_optimo) * 100
+            print(f"\n  ⚠️ No converge: EG ({metricas['EG']:.6f}) > Error Óptimo ({self.error_optimo})")
+            print(f"  📊 Alcanzado: {porcentaje:.1f}% del objetivo")
+            
+            if porcentaje < 150:
+                print(f"\n  💡 SUGERENCIA: Está muy cerca!")
+                print(f"     → Aumentar centros a {self.num_centros + 3}")
+            else:
+                centros_sugeridos = min(self.num_centros + 5, 30)
+                error_sugerido = round(metricas['EG'] * 1.1, 3)
+                print(f"\n  💡 SUGERENCIAS:")
+                print(f"     Opción 1: Aumentar centros a {centros_sugeridos}")
+                print(f"     Opción 2: Ajustar error óptimo a {error_sugerido}")
+                print(f"     Opción 3: Usar 'Configuración Automática' en la app")
         
         # Guardar historia
         self.historia_entrenamiento = {
